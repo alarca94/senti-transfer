@@ -1,0 +1,27 @@
+datasets: [emoevent, haternet, hateval2019, mex-a3t, universal_joy, tass2019, detoxis]
+preprocess:
+  dates: mask                     # mask | remove
+  hashtags: unpack                # mask | remove | unpack
+  numbers: mask                   # mask | remove
+  users: mask                     # mask | remove
+  urls: mask                      # mask | remove
+  emojis: mask                    # mask | remove
+transfer_learning:
+  mode: sequential                # sequential | mtl
+  consider_intermediate_test: True
+optimization:
+  opt_strategy: cross_validation  # cross_validation, n_holdout, fixed
+  folds: 5
+  hyper_max_evals: 5
+  hyper_opt_alg: tpe
+  early_stopping:
+    patience: 5
+models:
+  BETO:                            # SpanBERTa, BETO, M-BERT, XLM-RoBERTa
+    init_lr: [loguniform, -10, -1] # [{from: 0.00005, to: 0.00001, in: 5, type: float32}, {from: 0.0005, to: 0.0001, in: 5, type: float32}]
+    batch_size: [8, 16]
+    epochs: 1
+    dropout: [{from: 0.1, to: 0.5, in: 5, type: float}]
+    letter_case: uncased
+evaluation:
+  metrics: [Precision, Recall, F1Score]
